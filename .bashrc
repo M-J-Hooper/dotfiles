@@ -14,6 +14,11 @@ alias fixssh='eval $(tmux showenv -s SSH_AUTH_SOCK)'
 # Bash autocompletion
 [ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
 
+# VTE + Tilix
+if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
+    source /etc/profile.d/vte.sh
+fi
+
 #Styling
 export PS1='[\u \w$(git branch 2>/dev/null | sed -n "s/* \(.*\)/\ (\1\)/p")]$ '
 
