@@ -31,7 +31,6 @@ let g:vdebug_features = {}
 let g:vdebug_features['max_children'] = 512
 let g:vdebug_features['max_data'] = 1000000
 
-
 " CtrlP settings
 let g:ctrlp_max_files = 0
 let g:ctrlp_clear_cache_on_exit=0
@@ -50,4 +49,5 @@ Plug 'Yggdroot/indentLine'
 Plug 'vim-airline/vim-airline'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'JazzCore/ctrlp-cmatcher'
+Plug 'powerline/powerline'
 call plug#end()

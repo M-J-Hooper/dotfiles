@@ -1,6 +1,2 @@
 # Don't print a new line at the start of the prompt
 add_newline = false
-
-# Seperate prompt into 2 lines
-[line_break]
-disabled = true
