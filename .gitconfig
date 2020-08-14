@@ -30,8 +30,8 @@
     ri = !sh -c 'git rebase -i HEAD~$1' --
 
     pr = pull --rebase
-    pu = !sh -c 'git push -u origin $1'
-    puf = !sh -c 'git push -uf origin $1'
+    pu = !sh -c 'git push -u origin $(git rev-parse --abbrev-ref HEAD)'
+    puf = !sh -c 'git push -uf origin $(git rev-parse --abbrev-ref HEAD)'
 
     xx = !sh -c 'git checkout -- . && git clean -fdx'
     me = log --author=matthew.hooper
