@@ -7,7 +7,6 @@ from datetime import datetime
 repo = git.Repo('.')
 c = repo.head.commit
 
-t_author = int(c.authored_datetime.timestamp())
 offset = int(c.author_tz_offset / -3600)
 tz = f'{offset:+03d}00'
 
@@ -17,9 +16,9 @@ base += f'\nparent {c.parents[0].hexsha}'
 msg = repo.head.commit.message
 actor = f'{c.author.name} <{c.author.email}>'
 
-dt = 5
-now = int(datetime.now().timestamp())
-then = now + dt
+t_start = int(datetime.now().timestamp())
+t_author = int(c.authored_datetime.timestamp())
+t_commit = t_start + 1
 n = 0
 sha = ''
 new_msg = ''
@@ -29,7 +28,7 @@ while not sha.startswith('0000'):
     new_msg = f'{msg}\n{n}'
 
     cat = base + f'\nauthor {actor} {t_author} {tz}'
-    cat += f'\ncommitter {actor} {then} {tz}'
+    cat += f'\ncommitter {actor} {t_commit} {tz}'
     cat += f'\n\n{new_msg}\n'
 
     bs = len(cat.encode('utf-8'))
@@ -37,11 +36,12 @@ while not sha.startswith('0000'):
 
     sha = hashlib.sha1(ss.encode('utf-8')).hexdigest()
     if n % 1000 == 0:
-        print(f'Attempt {n} to commit at {then}')
+        t_commit = int(datetime.now().timestamp()) + 1
+        print(f'Attempt {n} to commit at {t_commit}')
 
-print(now, then, sha, ss)
+print(t_author, t_commit, sha, ss)
 
-while datetime.now().timestamp() < then:
+while datetime.now().timestamp() < t_commit:
     time.sleep(0.01)   
 
 repo.git.commit(m=new_msg, amend=True)
