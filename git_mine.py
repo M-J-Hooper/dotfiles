@@ -1,16 +1,24 @@
+import os
+import re
 import git
 import hashlib
 import time
 from datetime import datetime
 
-prefix = '00000'
+prefix = '0000'
 repo = git.Repo('.')
 c = repo.head.commit
 
+# Without this, post-commit hook loops forever
 if c.hexsha.startswith(prefix):
     exit('Nothing to do...')
 
-msg = repo.head.commit.message
+# This is pretty shady but lets post-commit hook work in rebases...
+cherry = './.git/CHERRY_PICK_HEAD'
+if os.path.isfile(cherry):
+    os.remove(cherry)
+
+msg = re.sub(r'\n\n\(\d+\)', '', repo.head.commit.message)
 actor = f'{c.author.name} <{c.author.email}>'
 
 offset = int(c.author_tz_offset / -3600)
