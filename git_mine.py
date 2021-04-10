@@ -3,8 +3,12 @@ import hashlib
 import time
 from datetime import datetime
 
+prefix = '00000'
 repo = git.Repo('.')
 c = repo.head.commit
+
+if c.hexsha.startswith(prefix):
+    exit('Nothing to do...')
 
 msg = repo.head.commit.message
 actor = f'{c.author.name} <{c.author.email}>'
@@ -12,9 +16,9 @@ actor = f'{c.author.name} <{c.author.email}>'
 offset = int(c.author_tz_offset / -3600)
 tz = f'{offset:+03d}00'
 
-t_start = int(datetime.now().timestamp())
+t_start = datetime.now().timestamp()
 t_author = int(c.authored_datetime.timestamp())
-t_commit = t_start + 1
+t_commit = int(t_start) + 1
 
 # Template for `git cat-file commit HEAD` output of hypothetical commit
 template = f'tree {c.tree.hexsha}'
@@ -28,7 +32,7 @@ template += f'\n\n{{}}\n'
 n = 0
 sha = 'TBD'
 new_msg = 'TLDR'
-while not sha.startswith('00000'):
+while not sha.startswith(prefix):
     n += 1
     new_msg = f'{msg}\n({n})'
 
@@ -43,7 +47,7 @@ while not sha.startswith('00000'):
     sha = hashlib.sha1(input.encode('utf-8')).hexdigest()
 
     # Periodically update future commit timestamp
-    if n % 10000 == 0:
+    if n % 100000 == 0:
         t_commit = int(datetime.now().timestamp()) + 1
         print(f'Attempt {n} to commit at {t_commit}: {sha}')
 
