@@ -16,6 +16,7 @@ t_start = int(datetime.now().timestamp())
 t_author = int(c.authored_datetime.timestamp())
 t_commit = t_start + 1
 
+# Template for `git cat-file commit HEAD` output of hypothetical commit
 template = f'tree {c.tree.hexsha}'
 for parent in c.parents:
     template += f'\nparent {parent.hexsha}'
@@ -31,7 +32,7 @@ while not sha.startswith('00000'):
     n += 1
     new_msg = f'{msg}\n({n})'
 
-    # Construct `git cat-file commit HEAD` output from template
+    # Construct cat-file output from template
     cat_file = template.format(t_commit, new_msg)
 
     # Add NUL-terminated header
