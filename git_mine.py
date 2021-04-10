@@ -6,10 +6,6 @@ from datetime import datetime
 repo = git.Repo('.')
 c = repo.head.commit
 
-base = f'tree {c.tree.hexsha}'
-for parent in c.parents:
-    base += f'\nparent {parent.hexsha}'
-
 msg = repo.head.commit.message
 actor = f'{c.author.name} <{c.author.email}>'
 
@@ -20,6 +16,14 @@ t_start = int(datetime.now().timestamp())
 t_author = int(c.authored_datetime.timestamp())
 t_commit = t_start + 1
 
+template = f'tree {c.tree.hexsha}'
+for parent in c.parents:
+    template += f'\nparent {parent.hexsha}'
+
+template += f'\nauthor {actor} {t_author} {tz}'
+template += f'\ncommitter {actor} {{}} {tz}'
+template += f'\n\n{{}}\n'
+
 n = 0
 sha = 'TBD'
 new_msg = 'TLDR'
@@ -27,10 +31,8 @@ while not sha.startswith('00000'):
     n += 1
     new_msg = f'{msg}\n({n})'
 
-    # Manually construct `git cat-file commit HEAD` output
-    cat_file = base + f'\nauthor {actor} {t_author} {tz}'
-    cat_file += f'\ncommitter {actor} {t_commit} {tz}'
-    cat_file += f'\n\n{new_msg}\n'
+    # Construct `git cat-file commit HEAD` output from template
+    cat_file = template.format(t_commit, new_msg)
 
     # Add NUL-terminated header
     byte_len = len(cat_file.encode('utf-8'))
@@ -45,11 +47,13 @@ while not sha.startswith('00000'):
         print(f'Attempt {n} to commit at {t_commit}: {sha}')
 
 dt = datetime.now().timestamp() - t_start
-print(f'\nFound {sha} after {n} attempts ({dt:.2f}s)')
+print(f'\nFound {sha} after {n} attempts')
+print(f'Took {dt:.2f}s (~{n/dt:.0f}/s)')
 
 print(f'Waiting to commit at {t_commit}...')
 while datetime.now().timestamp() < t_commit:
     time.sleep(0.01)   
 
+# Amend existing commit to use mined hash
 repo.git.commit(m=new_msg, amend=True, n=True)
 print('Done!')
