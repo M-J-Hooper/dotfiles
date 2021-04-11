@@ -53,20 +53,22 @@ while not pattern.match(sha):
     cat_file = template.format(t_commit, new_msg)
 
     # Add NUL-terminated header
-    byte_len = len(cat_file.encode('utf-8'))
+    byte_len = len(cat_file.encode())
     input = f'commit {byte_len}\0{cat_file}'
 
     # Predict hash of future commit
-    sha = hashlib.sha1(input.encode('utf-8')).hexdigest()
+    sha = hashlib.sha1(input.encode()).hexdigest()
 
     # Periodically update future commit timestamp
     if n % 100000 == 0:
         t_commit = int(datetime.now().timestamp()) + 1
         print(f'Attempt {n} to commit at {t_commit}: {sha}')
 
-dt = datetime.now().timestamp() - t_start
 print(f'\nFound {sha} after {n} attempts')
-print(f'Took {dt:.2f}s (~{n/dt:.0f}/s)')
+
+dt = datetime.now().timestamp() - t_start
+if dt > 0.01:
+    print(f'Took {dt:.2f}s (~{n/dt:.0f}/s)')
 
 print(f'Waiting to commit at {t_commit}...')
 while datetime.now().timestamp() < t_commit:
