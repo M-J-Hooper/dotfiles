@@ -5,12 +5,12 @@ import hashlib
 import time
 from datetime import datetime
 
-prefix = '0000'
+pattern = re.compile(r'^0000')
 repo = git.Repo('.')
 c = repo.head.commit
 
 # Without this, post-commit hook loops forever
-if c.hexsha.startswith(prefix):
+if pattern.match(c.hexsha):
     exit('Nothing to do...')
 
 # This is pretty shady but lets post-commit hook work in rebases...
@@ -45,7 +45,7 @@ template += f'\n\n{{}}\n'
 n = 0
 sha = 'TBD'
 new_msg = 'TLDR'
-while not sha.startswith(prefix):
+while not pattern.match(sha):
     n += 1
     new_msg = f'{msg}\n({n})'
 
