@@ -19,10 +19,15 @@ if os.path.isfile(cherry):
     os.remove(cherry)
 
 msg = re.sub(r'\n\n\(\d+\)', '', repo.head.commit.message)
-actor = f'{c.author.name} <{c.author.email}>'
 
-offset = int(c.author_tz_offset / -3600)
-tz = f'{offset:+03d}00'
+config = repo.config_reader()
+name = config.get_value('user', 'name')
+email = config.get_value('user', 'email')
+author = f'{c.author.name} <{c.author.email}>'
+committer = f'{name} <{email}>'
+
+author_offset = int(c.author_tz_offset / -3600)
+committer_offset = int(time.altzone / -3600)
 
 t_start = datetime.now().timestamp()
 t_author = int(c.authored_datetime.timestamp())
@@ -33,8 +38,8 @@ template = f'tree {c.tree.hexsha}'
 for parent in c.parents:
     template += f'\nparent {parent.hexsha}'
 
-template += f'\nauthor {actor} {t_author} {tz}'
-template += f'\ncommitter {actor} {{}} {tz}'
+template += f'\nauthor {author} {t_author} {author_offset:+03d}00'
+template += f'\ncommitter {committer} {{}} {committer_offset:+03d}00'
 template += f'\n\n{{}}\n'
 
 n = 0
