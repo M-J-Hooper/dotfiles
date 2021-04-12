@@ -47,9 +47,13 @@ sha = 'TBD'
 new_msg = 'TLDR'
 while not pattern.match(sha):
     n += 1
-    new_msg = f'{msg}\n({n})'
+    if n % 100000 == 0:
+        # Periodically update future commit timestamp
+        t_commit = int(datetime.now().timestamp()) + 1
+        print(f'Attempt {n} to commit at {t_commit}: {sha}')
 
     # Construct cat-file output from template
+    new_msg = f'{msg}\n({n})'
     cat_file = template.format(t_commit, new_msg)
 
     # Add NUL-terminated header
@@ -59,10 +63,6 @@ while not pattern.match(sha):
     # Predict hash of future commit
     sha = hashlib.sha1(input.encode()).hexdigest()
 
-    # Periodically update future commit timestamp
-    if n % 100000 == 0:
-        t_commit = int(datetime.now().timestamp()) + 1
-        print(f'Attempt {n} to commit at {t_commit}: {sha}')
 
 print(f'\nFound {sha} after {n} attempts')
 
