@@ -18,7 +18,8 @@ cherry = './.git/CHERRY_PICK_HEAD'
 if os.path.isfile(cherry):
     os.remove(cherry)
 
-msg = re.sub(r'\n\n\(\d+\)', '', repo.head.commit.message)
+marker = '---'
+msg = re.sub(f'\\n\\n{marker}\\d+{marker}', '', repo.head.commit.message)
 
 config = repo.config_reader()
 name = config.get_value('user', 'name')
@@ -53,7 +54,7 @@ while not pattern.match(sha):
         print(f'Attempt {n} to commit at {t_commit}: {sha}')
 
     # Construct cat-file output from template
-    new_msg = f'{msg}\n({n})'
+    new_msg = f'{msg}\n{marker}{n}{marker}'
     cat_file = template.format(t_commit, new_msg)
 
     # Add NUL-terminated header
@@ -64,7 +65,7 @@ while not pattern.match(sha):
     sha = hashlib.sha1(input.encode()).hexdigest()
 
 
-print(f'\nFound {sha} after {n} attempts')
+print(f'\n{marker}{n}{marker}> {sha}\n')
 
 dt = datetime.now().timestamp() - t_start
 if dt > 0.01:
