@@ -5,6 +5,7 @@ import hashlib
 import time
 from datetime import datetime
 
+marker = '---'
 pattern = re.compile(r'^0000')
 repo = git.Repo('.')
 c = repo.head.commit
@@ -17,9 +18,6 @@ if pattern.match(c.hexsha):
 cherry = './.git/CHERRY_PICK_HEAD'
 if os.path.isfile(cherry):
     os.remove(cherry)
-
-marker = '---'
-msg = re.sub(f'\\n\\n{marker}\\d+{marker}', '', repo.head.commit.message)
 
 config = repo.config_reader()
 name = config.get_value('user', 'name')
@@ -43,9 +41,10 @@ template += f'\nauthor {author} {t_author} {author_offset:+03d}00'
 template += f'\ncommitter {committer} {{}} {committer_offset:+03d}00'
 template += f'\n\n{{}}\n'
 
+msg = new_msg = re.sub(f'\\n\\n{marker}\\d+{marker}', '', repo.head.commit.message)
+
 n = 0
 sha = 'TBD'
-new_msg = 'TLDR'
 while not pattern.match(sha):
     n += 1
     if n % 100000 == 0:
