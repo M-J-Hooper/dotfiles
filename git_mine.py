@@ -5,7 +5,7 @@ import hashlib
 import time
 from datetime import datetime
 
-marker = '---'
+l = r = '---'
 pattern = re.compile(r'^0000')
 repo = git.Repo('.')
 c = repo.head.commit
@@ -41,19 +41,20 @@ template += f'\nauthor {author} {t_author} {author_offset:+03d}00'
 template += f'\ncommitter {committer} {{}} {committer_offset:+03d}00'
 template += f'\n\n{{}}\n'
 
-msg = new_msg = re.sub(f'{marker}\\d+{marker}', '', c.message).strip()
+# Avoid duplicating footer
+msg = new_msg = re.sub(f'{l}\\d+{r}', '', c.message).strip()
 
 n = 0
 sha = 'TBD'
 while not pattern.match(sha):
     n += 1
     if n % 100000 == 0:
-        # Periodically update future commit timestamp
+        # Make sure commit timestamp is in the future
         t_commit = int(datetime.now().timestamp()) + 1
         print(f'Attempt {n} to commit at {t_commit}: {sha}')
 
-    # Construct cat-file output from template
-    new_msg = f'{msg}\n\n{marker}{n}{marker}'
+    # Construct cat-file output from template including footer
+    new_msg = f'{msg}\n\n{l}{n}{r}'
     cat_file = template.format(t_commit, new_msg)
 
     # Add NUL-terminated header
@@ -64,7 +65,7 @@ while not pattern.match(sha):
     sha = hashlib.sha1(sha_input.encode()).hexdigest()
 
 
-print(f'\n{marker}{n}{marker}> {sha}\n')
+print(f'\n{l}{n}{r}> {sha}\n')
 
 dt = datetime.now().timestamp() - t_start
 if dt > 0.01:
@@ -74,6 +75,6 @@ print(f'Waiting to commit at {t_commit}...')
 while datetime.now().timestamp() < t_commit:
     time.sleep(0.01)   
 
-# Amend existing commit to use mined hash
+# Amend existing commit with new message to update the hash
 repo.git.commit(m=new_msg, amend=True, n=True)
 print('Done!')
