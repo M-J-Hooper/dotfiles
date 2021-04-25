@@ -41,7 +41,7 @@ template += f'\nauthor {author} {t_author} {author_offset:+03d}00'
 template += f'\ncommitter {committer} {{}} {committer_offset:+03d}00'
 template += f'\n\n{{}}\n'
 
-msg = new_msg = re.sub(f'\\n\\n{marker}\\d+{marker}', '', repo.head.commit.message)
+msg = new_msg = re.sub(f'{marker}\\d+{marker}', '', c.message).strip()
 
 n = 0
 sha = 'TBD'
@@ -53,7 +53,7 @@ while not pattern.match(sha):
         print(f'Attempt {n} to commit at {t_commit}: {sha}')
 
     # Construct cat-file output from template
-    new_msg = f'{msg}\n{marker}{n}{marker}'
+    new_msg = f'{msg}\n\n{marker}{n}{marker}'
     cat_file = template.format(t_commit, new_msg)
 
     # Add NUL-terminated header
