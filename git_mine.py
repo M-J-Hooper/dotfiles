@@ -58,10 +58,10 @@ while not pattern.match(sha):
 
     # Add NUL-terminated header
     byte_len = len(cat_file.encode())
-    input = f'commit {byte_len}\0{cat_file}'
+    sha_input = f'commit {byte_len}\0{cat_file}'
 
     # Predict hash of future commit
-    sha = hashlib.sha1(input.encode()).hexdigest()
+    sha = hashlib.sha1(sha_input.encode()).hexdigest()
 
 
 print(f'\n{marker}{n}{marker}> {sha}\n')
