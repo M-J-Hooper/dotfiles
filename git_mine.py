@@ -14,19 +14,23 @@ c = repo.head.commit
 if pattern.match(c.hexsha):
     exit('Nothing to do...')
 
-# This is pretty shady but lets post-commit hook work in rebases...
-cherry = './.git/CHERRY_PICK_HEAD'
-if os.path.isfile(cherry):
-    os.remove(cherry)
-
 config = repo.config_reader()
 name = config.get_value('user', 'name')
 email = config.get_value('user', 'email')
 author = f'{c.author.name} <{c.author.email}>'
 committer = f'{name} <{email}>'
 
+# Avoid messing with other people's commits when rebasing
+if author != committer:
+    exit('Not mine...')
+
+# This is pretty shady but lets post-commit hook work in rebases...
+cherry = './.git/CHERRY_PICK_HEAD'
+if os.path.isfile(cherry):
+    os.remove(cherry)
+
 author_offset = int(c.author_tz_offset / -3600)
-committer_offset = int(time.altzone / -3600)
+committer_offset = int(time.timezone / -3600)
 
 t_start = datetime.now().timestamp()
 t_author = int(c.authored_datetime.timestamp())
