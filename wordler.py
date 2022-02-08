@@ -56,11 +56,9 @@ def refine_possibilities(possible, feedback):
     for char, _ in feedback[2]: # Misses
         for i in range(5):
             refined = refined - lookup[char][i]
-        # print(f'After missed {char}: ', len(refined))
 
     for char, i in feedback[0]: # Exact hits
         refined = refined & lookup[char][i]
-        # print(f'After exact {char} at {i}: ', len(refined))
     
     for char, i in feedback[1]: # Inexact hits
         refined = refined - lookup[char][i]
@@ -69,7 +67,6 @@ def refine_possibilities(possible, feedback):
             if i != j:
                 temp = temp | lookup[char][j]
         refined = refined & temp
-        # print(f'After inexact {char} at {i}: ', len(refined))
 
     return refined
 
@@ -90,10 +87,27 @@ def feedback_permutations(guess):
                         yield entry
 
 
+def refine_chars_with_info(chars_with_info, feedback):
+    result = chars_with_info
+    for char, _ in feedback[0] + feedback[1] + feedback[2]:
+        result.add(char)
+    return result
+
+
 # Calculate the expected value of information for each possibility and return the optimal word
-def make_guess(possible):
+def make_guess(possible, chars_with_info):
     info_queue = queue.PriorityQueue()
-    for i, guess in enumerate(possible):
+
+    extra = set()
+    if len(possible) > 10: # Magic number when extra becomes less useful
+        extra = set(words)
+        for char in chars_with_info:
+            for i in range(5):
+                extra = extra - lookup[char][i]
+        print('Using extra ' + str(len(extra)) + ' outside of actual possibilities')
+
+    print('Calculating guess from ' + str(len(possible)) + ' actual possibilities')
+    for i, guess in enumerate(possible | extra):
         info = 0
         for feedback in feedback_permutations(guess):
             refined = refine_possibilities(possible, feedback)
@@ -101,14 +115,13 @@ def make_guess(possible):
             if prob > 0:
                 info += prob * math.log(prob, 2)
 
-        print(f'{i}: {guess} => {-info}')
         info_queue.put((info, guess))
 
     return info_queue.get()[1]
 
 
 # Pretty printing on the terminal
-def generate_history_string(guess, feedback):
+def pretty_print(guess, feedback):
     GREEN = '\033[42m'
     YELLOW = '\033[43m'
     END = '\033[0m'
@@ -135,11 +148,12 @@ first_guess = 'tries'
 
 # Try to guess every possible target
 results = [0] * 30
-for target in ['times', 'abbey', 'other', 'coils', 'rings']:
+for target in words:
     tries = 0
     history = []
     guess = ''
     possible = set(words)
+    chars_with_info = set()
 
     print(f'\nTarget: {target}')
     while True:
@@ -149,19 +163,20 @@ for target in ['times', 'abbey', 'other', 'coils', 'rings']:
         if tries == 1:
             guess = first_guess
         else:
-            guess = make_guess(possible)
+            guess = make_guess(possible, chars_with_info)
 
         print(f'Guess: {guess}')
         if guess == target:
             break    
 
         feedback = get_feedback(guess, target)
-        history.append(generate_history_string(guess, feedback))
+        history.append(pretty_print(guess, feedback))
+        
+        chars_with_info = refine_chars_with_info(chars_with_info, feedback)
         possible = refine_possibilities(possible, feedback)
-        print('Possibilities: ', len(possible))
 
     results[tries] = results[tries] + 1
-    history.append(generate_history_string(target, get_feedback(target, target)))
+    history.append(pretty_print(target, get_feedback(target, target)))
     print('\n' + '\n'.join(history))
 
 # Print the distribution of tries
