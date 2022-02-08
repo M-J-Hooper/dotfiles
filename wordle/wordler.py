@@ -8,6 +8,15 @@ words = []
 with open('./words.txt') as file:
     words = [line.rstrip() for line in file]
 
+# Try to guess every possible solution
+# Sourced from an alphabetised list of the actual answers
+test_cases = []
+with open('./test.txt') as file:
+    test_cases = [line.rstrip() for line in file]
+
+# Make sure we have all the answers somewhere in all the words
+words += test_cases 
+
 # Allow quick lookup of words that contain a char in a specific position
 lookup = {}
 for char in string.ascii_lowercase:
@@ -96,8 +105,9 @@ def refine_chars_with_info(chars_with_info, feedback):
 
 # Calculate the expected value of information for each possibility and return the optimal word
 def make_guess(possible, chars_with_info):
+    print('Calculating guess from ' + str(len(possible)) + ' actual possibilities')
+    
     info_queue = queue.PriorityQueue()
-
     extra = set()
     if len(possible) > 10: # Magic number when extra becomes less useful
         extra = set(words)
@@ -106,7 +116,6 @@ def make_guess(possible, chars_with_info):
                 extra = extra - lookup[char][i]
         print('Using extra ' + str(len(extra)) + ' outside of actual possibilities')
 
-    print('Calculating guess from ' + str(len(possible)) + ' actual possibilities')
     for i, guess in enumerate(possible | extra):
         info = 0
         for feedback in feedback_permutations(guess):
@@ -146,9 +155,8 @@ def pretty_print(guess, feedback):
 # Use `make_guess(set(words))` to do the full calculation
 first_guess = 'tries'
 
-# Try to guess every possible target
-results = [0] * 30
-for target in words:
+results = [0] * 100
+for target in set(test_cases):
     tries = 0
     history = []
     guess = ''
@@ -174,6 +182,8 @@ for target in words:
         
         chars_with_info = refine_chars_with_info(chars_with_info, feedback)
         possible = refine_possibilities(possible, feedback)
+        if len(possible) == 0:
+            exit('Possibilities exhausted, something went wrong!')
 
     results[tries] = results[tries] + 1
     history.append(pretty_print(target, get_feedback(target, target)))
