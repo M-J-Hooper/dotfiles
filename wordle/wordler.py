@@ -158,35 +158,40 @@ def pretty_print(guess, feedback):
     return result + END
 
 
+def main(target, feedback_provider):
+    tries = 0
+    history = []
+    guess = ''
+    possible = set(words)
+    chars_with_info = set()
+
+    print(f'\nTarget: {target}')
+    while True:
+        tries += 1
+        print(f'Try: {tries}')
+
+        guess = make_guess(possible, chars_with_info)
+        print(f'Guess: {guess}')
+
+        feedback = feedback_provider(guess, target)
+        history.append(pretty_print(guess, feedback))
+        if len(feedback[0]) == 5: # All hits
+            break
+        
+        chars_with_info = refine_chars_with_info(chars_with_info, feedback)
+        possible = refine_possibilities(possible, feedback)
+        if len(possible) == 0:
+            exit('Possibilities exhausted, something went wrong!')
+    
+    print('\n' + '\n'.join(history))
+    return tries
+
+
 if __name__ == '__main__':
     results = [0] * 100
     for target in set(test_cases):
-        tries = 0
-        history = []
-        guess = ''
-        possible = set(words)
-        chars_with_info = set()
-
-        print(f'\nTarget: {target}')
-        while True:
-            tries += 1
-            print(f'Try: {tries}')
-
-            guess = make_guess(possible, chars_with_info)
-            print(f'Guess: {guess}')
-
-            feedback = get_feedback(guess, target)
-            history.append(pretty_print(guess, feedback))
-            if len(feedback[0]) == 5: # All hits
-                break
-            
-            chars_with_info = refine_chars_with_info(chars_with_info, feedback)
-            possible = refine_possibilities(possible, feedback)
-            if len(possible) == 0:
-                exit('Possibilities exhausted, something went wrong!')
-
+        tries = main(target, get_feedback)
         results[tries] = results[tries] + 1
-        print('\n' + '\n'.join(history))
 
     # Print the distribution of tries
     print()
