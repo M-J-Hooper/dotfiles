@@ -113,7 +113,7 @@ def make_guess(possible, chars_with_info):
         return first_guess
 
     print('Calculating guess from ' + str(len(possible)) + ' actual possibilities')
-    
+
     info_queue = queue.PriorityQueue()
     extra = set()
     if len(possible) > 10: # Magic number when extra becomes less useful
@@ -122,6 +122,8 @@ def make_guess(possible, chars_with_info):
             for i in range(5):
                 extra = extra - lookup[char][i]
         print('Using extra ' + str(len(extra)) + ' outside of actual possibilities')
+    else:
+        print('Possibilities: ', possible)
 
     for i, guess in enumerate(possible | extra):
         info = 0
