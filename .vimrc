@@ -16,6 +16,7 @@ set numberwidth=3               " Line number width
 highlight LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
 set complete-=.,w,u,t,i
 set mouse=a
+set backspace=indent,eol,start
 
 let g:vdebug_options = {}
 let g:vdebug_options["socket_type"] = 'unix'

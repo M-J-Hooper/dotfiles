@@ -6,7 +6,6 @@ alias grep='grep --color'
 alias at='tmux a'
 alias k='kubectl'
 alias g='gcloud'
-alias fixssh='eval $(tmux showenv -s SSH_AUTH_SOCK)'
 
 # Very secret stuff
 [ -f ~/.bashsecrets ] && . ~/.bashsecrets
@@ -14,14 +13,13 @@ alias fixssh='eval $(tmux showenv -s SSH_AUTH_SOCK)'
 # Bash autocompletion
 [ -f /usr/local/etc/bash_completion ] && . /usr/local/etc/bash_completion
 
-# VTE + Tilix
-if [ $TILIX_ID ] || [ $VTE_VERSION ]; then
-    source /etc/profile.d/vte.sh
-fi
-
-#Styling
-export PS1='[\u \w$(git branch 2>/dev/null | sed -n "s/* \(.*\)/\ (\1\)/p")]$ '
-
 # Environment
 export PATH=$PATH:/usr/local/go/bin
 export PATH="$HOME/.cargo/bin:$PATH"
+
+export NVM_DIR="$HOME/.nvm"
+[ -s "/usr/local/opt/nvm/nvm.sh" ] && \. "/usr/local/opt/nvm/nvm.sh"  # This loads nvm
+[ -s "/usr/local/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/usr/local/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+
+# Generated for envman. Do not edit.
+[ -s "$HOME/.config/envman/load.sh" ] && source "$HOME/.config/envman/load.sh"

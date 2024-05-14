@@ -1,6 +1,6 @@
 [user]
-    name = Matt Hooper
-    email = matthewjhooper94@gmail.com
+	name = Matt Hooper
+	email = mattt.hoooper@gmail.com
 [core]
     editor = vi
 [alias]
@@ -43,3 +43,7 @@
     smudge = git-lfs smudge -- %f
     process = git-lfs filter-process
     required = true
+[push]
+	autoSetupRemote = true
+[pull]
+	rebase = true
