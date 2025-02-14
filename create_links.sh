@@ -13,5 +13,5 @@ for FILE in .[!.]*; do
     fi
 done
 
-# Link starship to .config
-ln -sf "$DIR/starship.toml" "$HOME/.config/"
+# Manual linking
+# ln -sf "$DIR/starship.toml" "$HOME/.config/"

@@ -77,7 +77,7 @@ if dt > 0.01:
 
 print(f'Waiting to commit at {t_commit}...')
 while datetime.now().timestamp() < t_commit:
-    time.sleep(0.01)   
+    time.sleep(0.01)
 
 # Amend existing commit with new message to update the hash
 repo.git.commit(m=new_msg, amend=True, n=True)
