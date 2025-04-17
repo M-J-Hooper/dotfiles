@@ -68,7 +68,7 @@ COMPLETION_WAITING_DOTS="true"
 # Custom plugins may be added to ~/.oh-my-zsh/custom/plugins/
 # Example format: plugins=(rails git textmate ruby lighthouse)
 # Add wisely, as too many plugins slow down shell startup.
-plugins=(git)
+plugins=(git kubectl)
 
 source $ZSH/oh-my-zsh.sh
 
@@ -82,13 +82,11 @@ alias grep='grep --color'
 alias at='tmux a'
 alias k='kubectl'
 alias g='gcloud'
-alias fixssh='eval $(tmux showenv -s SSH_AUTH_SOCK)'
 
-# Very secret stuff
+# Company-specific, API keys, etc.
 [ -f ~/.secrets ] && . ~/.secrets
 
 # Environment
-export PATH="/opt/homebrew/bin:$PATH"
 export PATH=$PATH:/usr/local/go/bin
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
