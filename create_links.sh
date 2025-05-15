@@ -14,4 +14,4 @@ for FILE in .[!.]*; do
 done
 
 # Manual linking
-# ln -sf "$DIR/starship.toml" "$HOME/.config/"
+ln -sf "$DIR/karabiner.json" "$HOME/.config/karabiner"

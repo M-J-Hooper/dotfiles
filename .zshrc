@@ -88,12 +88,7 @@ alias fixssh='eval $(tmux showenv -s SSH_AUTH_SOCK)'
 [ -f ~/.secrets ] && . ~/.secrets
 
 # Environment
+export PATH="/opt/homebrew/bin:$PATH"
 export PATH=$PATH:/usr/local/go/bin
 export PATH="$HOME/.cargo/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
-
-# Powerline
-powerline-daemon -q
-
-# Starship prompt
-eval "$(starship init zsh)"
