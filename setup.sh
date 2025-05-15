@@ -1,10 +1,10 @@
 #!/bin/bash
-# 
-# > ssh-keygen -t ed25519 -C "mattt.hoooper@gmail.com"
-# > pbcopy < ~/.ssh/id_ed25519.pub
-# > mkdir ~/workspace; cd ~/workspace
-# > git clone git@github.com:M-J-Hooper/dotfiles.git
-# > ./setup.sh
+#
+# ssh-keygen -t ed25519 -C "mattt.hoooper@gmail.com"
+# pbcopy < ~/.ssh/id_ed25519.pub
+# mkdir ~/workspace; cd ~/workspace
+# git clone git@github.com:M-J-Hooper/dotfiles.git
+# ./setup.sh <---Now you are ready to run this script!!!
 
 set -e
 
@@ -19,7 +19,10 @@ brew install \
   vim \
   zsh \
   jq \
-  fzf
+  fzf \
+  uv \
+  rust \
+  go
 
 brew install --cask \
   iterm2 \
