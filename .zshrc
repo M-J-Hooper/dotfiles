@@ -70,7 +70,9 @@ COMPLETION_WAITING_DOTS="true"
 # Add wisely, as too many plugins slow down shell startup.
 plugins=(git kubectl)
 
+eval "$(brew shellenv)"
 source $ZSH/oh-my-zsh.sh
+eval "$(direnv hook zsh)"
 
 ### User configuration
 

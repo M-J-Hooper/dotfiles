@@ -36,8 +36,8 @@ let g:vdebug_features['max_data'] = 1000000
 let g:ctrlp_max_files = 0
 let g:ctrlp_clear_cache_on_exit=0
 let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
-if executable('ag')
-    let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+if executable('rg')
+    let g:ctrlp_user_command = 'rg --files --hidden --follow --glob "!.git/*"'
 endif
 
 " Load vim-plug
@@ -50,5 +50,4 @@ Plug 'Yggdroot/indentLine'
 Plug 'vim-airline/vim-airline'
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'JazzCore/ctrlp-cmatcher'
-Plug 'powerline/powerline'
 call plug#end()

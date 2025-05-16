@@ -20,6 +20,7 @@ brew install \
   zsh \
   jq \
   fzf \
+  ripgrep \
   uv \
   rust \
   go
