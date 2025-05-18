@@ -30,7 +30,7 @@ if os.path.isfile(cherry):
     os.remove(cherry)
 
 author_offset = int(c.author_tz_offset / -3600)
-committer_offset = int(time.timezone / -3600)
+committer_offset = int(datetime.now().astimezone().utcoffset().total_seconds() / 3600)
 
 t_start = datetime.now().timestamp()
 t_author = int(c.authored_datetime.timestamp())
