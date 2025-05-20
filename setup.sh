@@ -19,8 +19,10 @@ brew install \
   vim \
   zsh \
   jq \
+  yq \
   fzf \
   ripgrep \
+  direnv \
   uv \
   rust \
   go
