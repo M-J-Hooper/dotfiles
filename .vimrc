@@ -10,7 +10,7 @@ set shiftwidth=4                " Number of spaces to use for autoindenting
 set tabstop=4                   " A tab is four spaces
 set smarttab                    " insert tabs at the start of a line according to
 set list                        " show invisible characters
-set listchars=tab:>·,trail:·    " but only show tabs and trailing whitespace
+set listchars=tab:>-,trail:-    " but only show tabs and trailing whitespace
 set number                      " Enable line numbers
 set numberwidth=3               " Line number width
 highlight LineNr term=bold cterm=NONE ctermfg=DarkGrey ctermbg=NONE gui=NONE guifg=DarkGrey guibg=NONE
